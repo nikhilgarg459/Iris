@@ -16,25 +16,48 @@ function addAuthenticatedHandler(rtm, handler) {
 }
 
 function handleOnMessage(message) {
-    nlp.ask(message.text, (err, res) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
 
-        if (!res.intent) {
-            return rtm.sendMessage(`Sorry I Don't know what you are talking about`, message.channel);
-        }
-        else if (res.intent[0].value == 'time' && res.location) {
-            return rtm.sendMessage(`Sorry I Don't know yet the time in ${res.location[0].value}`, message.channel);
-        }
-        else {
-            console.log(res);
-            rtm.sendMessage('Sorry I did not understand', message.channel, function messageSent() {
+    if (message.text.toLowerCase().includes('iris')) {
 
-            });
-        }
-    });
+        nlp.ask(message.text, (err, res) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            try{
+                if(!res.intent || !res.intent[0] || !res.intent[0].value){
+                    throw new Error('Could not extract intent.');
+                }
+
+                const intent = require('./intents/' + res.intent[0].value + 'Intent');
+                intent.process(res, function(error,response){
+                    if(err){
+                        console.log(error.message);
+                        return;
+                    }
+                    return rtm.sendMessage(response, message.channel);
+                })
+            }catch(err){
+                console.log(err);
+                console.log(res);
+                rtm.sendMessage(`Sorry I don't know what you are talking about`, message.channel);
+            }
+
+            if (!res.intent) {
+                return rtm.sendMessage(`Sorry I Don't know what you are talking about`, message.channel);
+            }
+            else if (res.intent[0].value == 'time' && res.location) {
+                return rtm.sendMessage(`Sorry I Don't know yet the time in ${res.location[0].value}`, message.channel);
+            }
+            else {
+                console.log(res);
+                rtm.sendMessage('Sorry I did not understand', message.channel, function messageSent() {
+
+                });
+            }
+        });
+    }
 
 }
 
