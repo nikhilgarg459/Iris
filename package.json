@@ -18,7 +18,8 @@
   "homepage": "https://github.com/nikhilgarg459/iris#readme",
   "dependencies": {
     "@slack/client": "^3.13.0",
-    "express": "^4.15.4"
+    "express": "^4.15.4",
+    "superagent": "^3.6.0"
   },
   "devDependencies": {}
 }
