@@ -6,17 +6,20 @@ const service = express();
 const ServiceRegistry = require('./serviceRegistry');
 const serviceRegistry = new ServiceRegistry();
 
-service.set('serviceRegistry', serviceRegistry);
+module.exports = (config) => {
 
-service.put('/service/:intent/:port', (req, res, next) =>{
-    const serviceIntent = req.params.intent;
-    const servicePort = req.params.port;
+    service.set('serviceRegistry', serviceRegistry);
 
-    const serviceIp = req.connection.remoteAddress.includes('::')
-    ? `[${req.connection.remoteAddress}]` : req.connection.remoteAddress; // to check if it's IPV6 or IPV4
+    service.put('/service/:intent/:port', (req, res, next) => {
+        const serviceIntent = req.params.intent;
+        const servicePort = req.params.port;
 
-    serviceRegistry.add(serviceIntent, serviceIp, servicePort)    
-    res.json({result: `${serviceIntent} at ${serviceIp}:${servicePort}`});
-});
+        const serviceIp = req.connection.remoteAddress.includes('::')
+            ? `[${req.connection.remoteAddress}]` : req.connection.remoteAddress; // to check if it's IPV6 or IPV4
 
-module.exports = service;
+        serviceRegistry.add(serviceIntent, serviceIp, servicePort)
+        res.json({ result: `${serviceIntent} at ${serviceIp}:${servicePort}` });
+    });
+
+    return service;
+}
