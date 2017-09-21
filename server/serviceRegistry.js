@@ -2,9 +2,9 @@
 
 class ServiceRegistry{
 
-    constructor(){
+    constructor(timeout){
         this._services = [];
-        this._timeout = 30;  //Timeout if microservice doesn't announce after 30 seconds
+        this._timeout = timeout;  //Timeout if microservice doesn't announce after 30 seconds
     }
 
     add(intent, ip, port){
