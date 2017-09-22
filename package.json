@@ -7,6 +7,9 @@
     "test": "NODE_ENV=test eslint bin server &&  nyc mocha --recursive test",
     "start": "node bin/run"
   },
+  "engines":{
+    "node": "6.10.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nikhilgarg459/iris.git"
