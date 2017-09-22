@@ -30,7 +30,7 @@ class WitClient {
     }
 
 
-    
+     
 }
 
 module.exports = WitClient;
