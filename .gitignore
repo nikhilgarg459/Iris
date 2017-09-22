@@ -1,6 +1,5 @@
 wit.txt
-token
-const.js
+.env
 # Logs
 logs
 *.log

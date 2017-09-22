@@ -1,28 +1,24 @@
 'use strict';
 
-const slackClient = require('../server/slackClient');
-const service = require('../server/service');
+const config = require('../config');
+const log = config.log();
+const SlackClient = require('../server/slackClient');
+const service = require('../server/service')(config);
 const http = require('http');
 
 const server = http.createServer(service);
 
-const witToken = require('../const.js').witToken;
-const witClient = require('../server/witClient')(witToken);
-
-const slackToken = require('../const.js').slackToken;
-const slackLogLevel = 'verbose';
+const witToken = config.witToken;
+const WitClient = require('../server/witClient');
+const witClient = new WitClient(witToken);
 
 const serviceRegistry = service.get('serviceRegistry');
+const slackClient = new SlackClient(config.slackToken, config.slackLogLevel, witClient, serviceRegistry, log);
 
-const rtm = slackClient.init(slackToken, slackLogLevel, witClient, serviceRegistry);
-rtm.start();
-
-slackClient.addAuthenticatedHandler(rtm, ()=>{
+slackClient.start(()=>{
     server.listen(3001);
 });
 
-//server.listen(3001);
-
-server.on('listening', function(){
-    console.log(`IRIS is listenong on ${server.address().port} in ${service.get('env')} mode`); 
+server.on('listening', function () {
+    log.info(`IRIS is listenong on ${server.address().port} in ${service.get('env')} mode`);
 });
