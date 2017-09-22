@@ -25,9 +25,12 @@ class WitClient {
                 }
 
                 const witResponse = handleWitResponse(response.body);
-                cb(null, witResponse);
+                return cb(null, witResponse);
             });
     }
+
+
+    
 }
 
 module.exports = WitClient;
